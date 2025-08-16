@@ -1,0 +1,93 @@
+<!-- home.component.html (Bootstrap Version) -->
+<div class="container py-4">
+  <!-- Header -->
+  <header class="d-flex justify-content-between align-items-center mb-5">
+    <h1 class="h4 fw-bold">Work From Another Home</h1>
+    <nav>
+      <a href="#" class="me-3 text-decoration-none text-secondary">My Bookings</a>
+      <a (click)="listYourSpaceDialog()" class="me-3 text-decoration-none text-secondary">List Your Space</a>
+      <a href="#" class="me-3 text-decoration-none text-secondary">About Us</a>
+      <a href="#" class="me-3 text-decoration-none text-secondary">Help / FAQ</a>
+      <a href="#" class="me-3 text-decoration-none text-secondary" routerLink="/login">Login / Signup</a>
+      <button class="btn btn-light rounded-circle p-2"></button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="text-center">
+    <h2 class="mb-4">Find a personal workspace near you</h2>
+
+    <!-- Pincode Input -->
+    <div class="mx-auto mb-5" style="max-width: 400px;">
+
+      <input [(ngModel)]="pincode" type="text" class="form-control mb-3" placeholder="Enter a pincode">
+      <p-button (onClick)="getListings()">Search</p-button>
+    </div>
+
+    <!-- Listing Cards -->
+    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+      <div class="col" *ngFor="let listing of listings">
+        <div class="card h-100 shadow-sm">
+          <img [src]="listing.image" class="card-img-top" alt="listing">
+          <div class="card-body text-start">
+            <h5 class="card-title">{{ listing.address }}</h5>
+            <p class="card-text text-muted">
+              {{ listing.description }}<br>
+              {{ listing.availableHours }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+
+<p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '100%' }" header="List Your Space">
+  <div class="px-4 flex flex-1 justify-center ">
+    <div class="layout-content-container flex flex-col w-full max-w-[512px] flex-1">
+
+      <!-- Image Upload -->
+      <div class="field mb-4 px-2">
+        <label style="width: 30%;" for="image" class="block text-base font-medium mb-2">Upload an image</label>
+        <p-fileUpload class="widthset" name="image" mode="basic" chooseLabel="Choose File" customUpload="true"
+          (onSelect)="onImageUpload($event)" />
+      </div>
+
+      <!-- Location -->
+      <div class="field mb-4 px-2">
+        <label style="width: 30%;" for="pincode" class="block text-base font-medium mb-2">Location (pincode)</label>
+        <input style="width: 30%;" id="pincode" pInputText [(ngModel)]="form.pincode" placeholder="Enter pincode"
+          class="w-full" />
+      </div>
+
+      <!-- Space Name -->
+      <div class="field mb-4 px-2">
+        <label style="width: 30%;" for="address" class="block text-base font-medium mb-2">Space address</label>
+        <input style="width: 30%;" id="address" pInputText [(ngModel)]="form.address" placeholder="Enter space name"
+          class="w-full" />
+      </div>
+
+      <!-- Description -->
+      <div class="field mb-4 px-2">
+        <label style="width: 30%;" for="description" class="block text-base font-medium mb-2">Description</label>
+        <input style="width: 30%;" id="description" pInpukstText [(ngModel)]="form.description" rows="4"
+          placeholder="Enter description" class="w-full" />
+      </div>
+
+      <!-- Available Hours -->
+      <div class="field mb-4 px-2">
+        <label style="width: 30%;" for="hours" class="block text-base font-medium mb-2">Available hours</label>
+        <input pInputText style="width: 30%;" id="hours" [(ngModel)]="form.hours" placeholder="e.g. 9:00 AM - 6:00 PM"
+          class="w-full" />
+      </div>
+
+      <!-- Submit Button -->
+      <div class="flex px-2 py-3 justify-end">
+        <p-button label="Submit" (click)="submitForm()" class="w-full md:w-auto" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+</p-dialog>

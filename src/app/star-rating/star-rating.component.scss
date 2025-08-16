@@ -1,0 +1,9 @@
+.star {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+  user-select: none;
+}
+.star.filled {
+  color: gold;
+}

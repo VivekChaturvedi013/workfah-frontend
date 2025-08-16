@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="details">
+        <app-title title="Login Page"></app-title>
+        <form [formGroup]="loginform" (ngSubmit)="onSubmit()">
+            <text-input [control]="fc.email" [showErrorWhen]="isSubmitted" type="email" label="Email">
+            </text-input>
+            <text-input [control]="fc.password" [showErrorWhen]="isSubmitted" type="password" label="Password">
+            </text-input>
+            <div style="flex: auto; display: flex; justify-content: space-between; align-items: center;">
+                <default-button text="Login"></default-button> <p-button (click)="hello()"
+                    routerLink="/register">Register</p-button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<p-dialog [(visible)]="showRegister" modal="true" header="Create an account"
+    [style]="{ width: '600px', borderRadius: '12px' }" [contentStyle]="{ padding: '2rem' }" [baseZIndex]="10000"
+    [draggable]="false">
+    <form class="grid gap-4" style="grid-template-columns: 150px 1fr;" (ngSubmit)="onSubmitReg()">
+
+        <!-- <label for="picture" class="text-sm font-medium self-center">Profile picture</label>
+        <input id="picture" type="text" pInputText placeholder="Add a profile picture" [(ngModel)]="form.picture"
+            name="picture" class="p-inputtext-sm w-full" /> -->
+
+        <label for="name" class="text-sm font-medium self-center">Name</label>
+        <input id="name" type="text" pInputText placeholder="Full name" [(ngModel)]="form.name" name="name"
+            class="p-inputtext-sm w-full" />
+
+        <label for="email" class="text-sm font-medium self-center">Email</label>
+        <input id="email" type="email" pInputText placeholder="Email address" [(ngModel)]="form.email" name="email"
+            class="p-inputtext-sm w-full" />
+
+        <!-- <label for="phone" class="text-sm font-medium self-center">Phone number</label>
+        <input id="phone" type="text" pInputText placeholder="Phone number" [(ngModel)]="form.phone" name="phone"
+            class="p-inputtext-sm w-full" /> -->
+
+        <label for="password" class="text-sm font-medium self-center">Password</label>
+        <input id="password" type="password" pInputText placeholder="Password" [(ngModel)]="form.password"
+            name="password" class="p-inputtext-sm w-full" />
+
+        <!-- Spacer for aligning button -->
+        <div></div>
+        <button pButton type="submit" label="Register" class="w-full p-button p-button-rounded"></button>
+
+        <!-- Spacer for aligning terms -->
+        <div></div>
+        <p class="text-xs text-gray-400 text-center col-span-1 md:col-span-2">
+            By registering, you agree to our Terms of Service and Privacy Policy.
+        </p>
+    </form>
+</p-dialog>

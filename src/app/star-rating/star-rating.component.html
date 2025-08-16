@@ -1,0 +1,9 @@
+<span *ngFor="let star of [].constructor(totalstars); let i = index"
+      (click)="setRating(i + 1)"
+      [ngStyle]="{
+        color: i < value ? checkedcolor : uncheckedcolor,
+        fontSize: size,
+        cursor: readonly ? 'default' : 'pointer'
+      }">
+  ★
+</span>

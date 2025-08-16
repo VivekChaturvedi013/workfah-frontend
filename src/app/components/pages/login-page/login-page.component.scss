@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin-top: 3rem;
+}
+
+.details {
+    width: 28rem;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+::ng-deep .p-dialog {
+  border-radius: 16px;
+}
+
+::ng-deep .p-inputtext {
+  border-radius: 10px;
+  background-color: #f4f4f5;
+  border: 1px solid #e5e7eb;
+  padding: 0.75rem;
+}
