@@ -16,6 +16,8 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
+import { environment } from '../../../../environments/environment';
+
 
 
 
@@ -129,7 +131,7 @@ export class HomeComponent {
     formData.append('description', this.form.description);
     formData.append('availableHours', this.form.hours);
     formData.append('image', this.form.image);
-    this.http.post('http://localhost:5000/api/listings', formData).subscribe(
+    this.http.post(`${environment.apiUrl}/listings`, formData).subscribe(
       (response) => {
         console.log('listing created sucessfully', response);
       }
@@ -157,7 +159,7 @@ export class HomeComponent {
 }
 
 getListings() {
-  this.http.get('http://localhost:5000/api/listings/' + this.pincode).subscribe((response: any) => {
+  this.http.get(`${environment.apiUrl}/listings/` + this.pincode).subscribe((response: any) => {
     this.listings = response;
   })
 }
