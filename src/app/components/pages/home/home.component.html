@@ -8,8 +8,14 @@
       <a (click)="listYourSpaceDialog()" class="me-3 text-decoration-none text-secondary">List Your Space</a>
       <a href="#" class="me-3 text-decoration-none text-secondary">About Us</a>
       <a href="#" class="me-3 text-decoration-none text-secondary">Help / FAQ</a>
-      <a href="#" class="me-3 text-decoration-none text-secondary" routerLink="/login">Login / Signup</a>
-      <button class="btn btn-light rounded-circle p-2"></button>
+      <a *ngIf="!auth.isLoggedIn(); else loggedIn" class="me-3 text-decoration-none text-secondary" routerLink="/login">
+        Login / Signup
+      </a>
+      <ng-template #loggedIn>
+        <a class="me-3 text-decoration-none text-secondary" (click)="logout()" style="cursor:pointer;">
+          Logout
+        </a>
+      </ng-template>
     </nav>
   </header>
 

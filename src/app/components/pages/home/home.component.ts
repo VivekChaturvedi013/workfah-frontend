@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Food } from '../../../shared/models/food';
 import { FoodService } from '../../../services/food.service';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { StarRatingComponent } from '../../../star-rating/star-rating.component';
 import { SerachComponent } from '../../partials/serach/serach.component';
 import { TagsComponent } from '../../partial/tags/tags.component';
@@ -17,6 +17,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { environment } from '../../../../environments/environment';
+import { AuthService } from '../../../auth-service.service';
 
 
 
@@ -80,7 +81,7 @@ export class HomeComponent {
     image: null as File | null,
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private router:Router,public auth: AuthService,private http: HttpClient) {}
 
   getLocationAndLogPincode() {
     if (!navigator.geolocation) {
@@ -162,6 +163,16 @@ getListings() {
   this.http.get(`${environment.apiUrl}/listings/` + this.pincode).subscribe((response: any) => {
     this.listings = response;
   })
+}
+
+logout() {
+  this.auth.logout();
+  this.listings = []; // Clear listings on logout
+  this.pincode = ''; // Clear pincode input
+  alert('Logged out successfully');
+  // Optionally, redirect to home or login page
+  this.router.navigate(['/login']);
+  console.log('User logged out');
 }
 
 }
