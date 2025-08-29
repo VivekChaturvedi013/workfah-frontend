@@ -81,6 +81,19 @@ export class HomeComponent {
     image: null as File | null,
   };
 
+  showBookingModal = false;
+  selectedListing: any = null;
+  bookingDate: string = '';
+  bookingTime: string = '';
+  host:string='';
+
+  timeSlots: string[] = [
+    '9:00 AM - 12:00 PM',
+    '12:00 PM - 3:00 PM',
+    '3:00 PM - 6:00 PM',
+    '6:00 PM - 9:00 PM'
+  ];
+
   constructor(private router:Router,public auth: AuthService,private http: HttpClient) {}
 
   getLocationAndLogPincode() {
@@ -174,5 +187,53 @@ logout() {
   this.router.navigate(['/login']);
   console.log('User logged out');
 }
+
+isHost(): boolean {
+    const userJson = localStorage.getItem('user');
+    if (userJson) {
+      const user = JSON.parse(userJson);
+      return Array.isArray(user.roles) && user.roles.includes('host');
+    }
+    return false;
+  }
+
+  // getListings() {
+  //   this.http.get<any[]>(`http://localhost:5000/api/listings?pincode=${this.pincode}`)
+  //     .subscribe(data => this.listings = data);
+  // }
+
+  openBookingModal(listing: any) {
+    this.selectedListing = listing;
+    this.showBookingModal = true;
+  }
+
+  closeBookingModal() {
+    this.showBookingModal = false;
+    this.selectedListing = null;
+    this.bookingDate = '';
+    this.bookingTime = '';
+  }
+
+  confirmBooking() {
+    if (!this.bookingDate || !this.bookingTime) {
+      alert("Please select date and time!");
+      return;
+    }
+
+    const bookingData = {
+      listingId: this.selectedListing._id,
+      date: this.bookingDate,
+      time: this.bookingTime,
+      host:this.selectedListing.host
+    };
+
+    this.http.post('http://localhost:5000/api/bookings/request', bookingData).subscribe({
+      next: () => {
+        alert("Booking request sent!");
+        this.closeBookingModal();
+      },
+      error: () => alert("Failed to send booking request.")
+    });
+  }
 
 }

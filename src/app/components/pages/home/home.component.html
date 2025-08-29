@@ -4,7 +4,8 @@
   <header class="d-flex justify-content-between align-items-center mb-5">
     <h1 class="h4 fw-bold">Work From Another Home</h1>
     <nav>
-      <a href="#" class="me-3 text-decoration-none text-secondary">My Bookings</a>
+      <a routerLink="/my-bookings" href="#" class="me-3 text-decoration-none text-secondary">My Bookings</a>
+      <a routerLink="/my-listings" *ngIf="isHost()" class="me-3 text-decoration-none text-secondary">My Listings / Booking Requests </a><!-- (visible only if host)-->
       <a (click)="listYourSpaceDialog()" class="me-3 text-decoration-none text-secondary">List Your Space</a>
       <a href="#" class="me-3 text-decoration-none text-secondary">About Us</a>
       <a href="#" class="me-3 text-decoration-none text-secondary">Help / FAQ</a>
@@ -21,34 +22,96 @@
 
   <!-- Main Content -->
   <main class="text-center">
-    <h2 class="mb-4">Find a personal workspace near you</h2>
+  <h2 class="mb-4">Find a personal workspace near you</h2>
 
-    <!-- Pincode Input -->
-    <div class="mx-auto mb-5" style="max-width: 400px;">
+  <!-- Pincode Input -->
+  <div class="mx-auto mb-5" style="max-width: 400px;">
+    <input [(ngModel)]="pincode" type="text" class="form-control mb-3" placeholder="Enter a pincode">
+    <p-button (onClick)="getListings()">Search</p-button>
+  </div>
 
-      <input [(ngModel)]="pincode" type="text" class="form-control mb-3" placeholder="Enter a pincode">
-      <p-button (onClick)="getListings()">Search</p-button>
-    </div>
+  <!-- Listing Cards -->
+  <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
+    <div class="col" *ngFor="let listing of listings">
+      <div class="card h-100 shadow-sm">
+        <img [src]="listing.image" class="card-img-top" alt="listing">
+        <div class="card-body text-start">
+          <h5 class="card-title">{{ listing.address }}</h5>
+          <p class="card-text text-muted">
+            {{ listing.description }}<br>
+            {{ listing.availableHours }}
+          </p>
 
-    <!-- Listing Cards -->
-    <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
-      <div class="col" *ngFor="let listing of listings">
-        <div class="card h-100 shadow-sm">
-          <img [src]="listing.image" class="card-img-top" alt="listing">
-          <div class="card-body text-start">
-            <h5 class="card-title">{{ listing.address }}</h5>
-            <p class="card-text text-muted">
-              {{ listing.description }}<br>
-              {{ listing.availableHours }}
-            </p>
-          </div>
+          <!-- Book Now button -->
+          <button class="btn btn-primary w-100 mt-2" (click)="openBookingModal(listing)">
+            Book Now
+          </button>
         </div>
       </div>
     </div>
-  </main>
+  </div>
+</main>
+
+<!-- Booking Modal -->
+<div class="modal fade" tabindex="-1" [class.show]="showBookingModal" [style.display]="showBookingModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Book Workspace</h5>
+        <button type="button" class="btn-close" (click)="closeBookingModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Listing:</strong> {{ selectedListing?.address }}</p>
+        <p><strong>Description:</strong> {{ selectedListing?.description }}</p>
+
+        <!-- Date -->
+        <label class="form-label">Select Date</label>
+        <input type="date" class="form-control mb-3" [(ngModel)]="bookingDate">
+
+        <!-- Time Slot -->
+        <label class="form-label">Select Time Slot</label>
+        <select class="form-control mb-3" [(ngModel)]="bookingTime">
+          <option *ngFor="let slot of timeSlots" [value]="slot">{{ slot }}</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeBookingModal()">Cancel</button>
+        <button class="btn btn-success" (click)="confirmBooking()">Confirm Booking</button>
+      </div>
+    </div>
+  </div>
 </div>
 
+</div>
 
+<div class="modal fade" tabindex="-1" [class.show]="showBookingModal" [style.display]="showBookingModal ? 'block' : 'none'">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Book Workspace</h5>
+        <button type="button" class="btn-close" (click)="closeBookingModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Listing:</strong> {{ selectedListing?.address }}</p>
+        <p><strong>Description:</strong> {{ selectedListing?.description }}</p>
+
+        <!-- Date -->
+        <label class="form-label">Select Date</label>
+        <input type="date" class="form-control mb-3" [(ngModel)]="bookingDate">
+
+        <!-- Time Slot -->
+        <label class="form-label">Select Time Slot</label>
+        <select class="form-control mb-3" [(ngModel)]="bookingTime">
+          <option *ngFor="let slot of timeSlots" [value]="slot">{{ slot }}</option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeBookingModal()">Cancel</button>
+        <button class="btn btn-success" (click)="confirmBooking()">Confirm Booking</button>
+      </div>
+    </div>
+  </div>
+</div>
 <p-dialog [(visible)]="visible" [modal]="true" [style]="{ width: '100%' }" header="List Your Space">
   <div class="px-4 flex flex-1 justify-center ">
     <div class="layout-content-container flex flex-col w-full max-w-[512px] flex-1">

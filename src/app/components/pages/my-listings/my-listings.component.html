@@ -1,0 +1,139 @@
+<div class="container mx-auto p-6">
+  <!-- Header with Back button -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold">My Dashboard</h2>
+    <p-button 
+      label="Back to Home" 
+      icon="pi pi-home" 
+      [routerLink]="['/home']" 
+      severity="secondary">
+    </p-button>
+  </div>
+
+  <!-- Tabs -->
+  <!-- Tabs -->
+  <p-tabView>
+    <!-- Guest View: My Bookings -->
+    <p-tabPanel [selected]="activeTab === 'bookings'" header="My Bookings">
+      <h2 class="text-xl font-bold mb-4">My Booking Requests</h2>
+
+      <p-message 
+        *ngIf="myBookings.length === 0" 
+        severity="info" 
+        text="No booking requests yet.">
+      </p-message>
+
+      <p-table 
+        *ngIf="myBookings.length > 0" 
+        [value]="myBookings" 
+        responsiveLayout="scroll">
+        
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Property</th>
+            <th>Host</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-booking>
+          <tr>
+            <td>{{ booking.propertyAddress }}</td>
+            <td>{{ booking.hostName }}</td>
+            <td>{{ booking.date }}</td>
+            <td>
+              <p-tag 
+                [value]="booking.status" 
+                [severity]="
+                  booking.status === 'Pending' ? 'warn' : 
+                  booking.status === 'Accepted' ? 'success' : 'danger'
+                ">
+              </p-tag>
+            </td>
+            <td>
+              <p-button 
+                *ngIf="booking.status === 'Pending'" 
+                label="Cancel" 
+                severity="secondary"
+                (onClick)="cancelBooking(booking.id)">
+              </p-button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-tabPanel>
+
+    <!-- Host View: My Listings -->
+    <p-tabPanel [selected]="activeTab === 'listings'" header="My Listings">
+      <h2 class="text-xl font-bold mb-4">My Listings</h2>
+
+      <p-message 
+        *ngIf="myListings.length === 0" 
+        severity="info" 
+        text="No listings created yet.">
+      </p-message>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="my-card">
+          <p-card *ngFor="let listing of myListings" class="shadow-md">
+            <ng-template pTemplate="header">
+              <img *ngIf="listing.image" [src]="listing.image" alt="Listing Image" class="rounded">
+            </ng-template>
+  
+            <ng-template pTemplate="title">
+              {{ listing.address }} ({{ listing.pincode }})
+            </ng-template>
+  
+            <ng-template pTemplate="subtitle">
+              {{ listing.description }}
+            </ng-template>
+  
+            <ng-template pTemplate="content">
+              <p>Available: {{ listing.availableHours }}</p>
+            </ng-template>
+  
+            <ng-template pTemplate="footer">
+              <p-button 
+                label="View Booking Requests" 
+                icon="pi pi-eye" 
+                (onClick)="toggleRequests(listing._id)">
+              </p-button>
+  
+              <div *ngIf="openListingId === listing._id" class="mt-4">
+                <h4 class="font-bold mb-2">Booking Requests</h4>
+  
+                <p-message 
+                  *ngIf="listing.requests.length === 0" 
+                  severity="info" 
+                  text="No requests yet.">
+                </p-message>
+  
+                <div *ngFor="let req of listing.requests" class="flex justify-between items-center border-b py-2">
+                  <div>
+                    <p class="font-medium">{{ req.guestName }} ({{ req.guestEmail }})</p>
+                    <p class="text-sm text-gray-600">{{ req.date }}</p>
+                    <p-tag *ngIf="req.status" [value]="req.status" [severity]="
+                        req.status === 'Pending' ? 'warn' : 
+                        req.status === 'Approved' ? 'success' : 'danger'
+                      ">
+                    </p-tag>
+                  </div>
+                
+                  <div class="flex space-x-2" *ngIf="req.status === 'Pending'">
+                    <p-button label="Accept" severity="success" (onClick)="updateRequest(req.id, 'approve')">
+                    </p-button>
+                    <p-button label="Reject" severity="danger" (onClick)="updateRequest(req.id, 'reject')">
+                    </p-button>
+                  </div>
+                </div>
+  
+              </div>
+            </ng-template>
+          </p-card>
+        </div>
+      </div>
+    </p-tabPanel>
+  </p-tabView>
+</div>

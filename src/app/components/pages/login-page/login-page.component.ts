@@ -17,7 +17,9 @@ import { InputTextModule } from 'primeng/inputtext';
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [CommonModule, DialogModule, InputTextModule, ButtonModule, FormsModule,CommonModule, ReactiveFormsModule, TitleComponent, InputContainerComponent, InputValidationComponent, TextInputComponent, DefaultButtonComponent, Button],
+  imports: [CommonModule, DialogModule, InputTextModule, ButtonModule, FormsModule,CommonModule, ReactiveFormsModule, TitleComponent, InputContainerComponent, InputValidationComponent, TextInputComponent, DefaultButtonComponent, Button,
+    
+  ],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss'
 })

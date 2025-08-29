@@ -1,0 +1,78 @@
+<!-- <main class="container mx-auto p-4">
+  <h2 class="text-xl font-bold mb-4">My Booking Requests</h2>
+
+  <div *ngIf="myBookings.length === 0" class="text-gray-500">
+    No bookings yet.
+  </div>
+
+  <div *ngFor="let booking of myBookings" class="p-4 mb-3 border rounded-lg shadow-sm">
+    <p><strong>Property:</strong> {{ booking.listingId?.address }}</p>
+    <p><strong>Host:</strong> {{ booking.listingId?.host?.name }}</p>
+    <p><strong>Date:</strong> {{ booking.date }}</p>
+    <p><strong>Status:</strong> {{ booking.status }}</p>
+
+    <button
+      *ngIf="booking.status === 'pending'"
+      (click)="cancelBooking(booking._id)"
+      class="mt-2 px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600"
+    >
+      Cancel
+    </button>
+  </div>
+</main> -->
+
+<main class="container mx-auto p-4">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-xl font-bold">My Booking Requests</h2>
+    <p-button 
+      label="Back to Home" 
+      icon="pi pi-home" 
+      routerLink="/home" 
+      severity="secondary">
+    </p-button>
+  </div>
+
+  <!-- Empty State -->
+  <p-message 
+    *ngIf="myBookings.length === 0" 
+    severity="info" 
+    text="No bookings yet.">
+  </p-message>
+
+  <!-- Booking Cards -->
+  <div class="grid gap-4">
+    <p-card *ngFor="let booking of myBookings" class="shadow-md">
+      <ng-template pTemplate="title">
+        {{ booking.listingId?.address }}
+      </ng-template>
+
+      <ng-template pTemplate="subtitle">
+        Host: {{ booking.listingId?.host?.name }}
+      </ng-template>
+
+      <ng-template pTemplate="content">
+        <p><strong>Date:</strong> {{ booking.date }}</p>
+        <p>
+          <strong>Status:</strong>
+          <p-tag 
+            [value]="booking.status" 
+            [severity]="
+              booking.status === 'pending' ? 'warn' : 
+              booking.status === 'approved' ? 'success' : 'danger'
+            ">
+          </p-tag>
+        </p>
+      </ng-template>
+
+      <!-- <ng-template pTemplate="footer">
+        <p-button 
+          *ngIf="booking.status === 'pending'" 
+          label="Cancel" 
+          severity="secondary" 
+          (onClick)="cancelBooking(booking._id)">
+        </p-button>
+      </ng-template> -->
+    </p-card>
+  </div>
+</main>
+

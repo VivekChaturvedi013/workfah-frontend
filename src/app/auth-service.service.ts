@@ -40,4 +40,26 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
+
+  // Get the user's first role (e.g., "guest" or "host")
+  getRole(): string | null {
+    const userJson = localStorage.getItem('user');
+    if (userJson) {
+      const user = JSON.parse(userJson);
+      if (user.roles && Array.isArray(user.roles) && user.roles.length > 0) {
+        return user.roles;
+      }
+    }
+    return null;
+  }
+
+  // Optionally, set the user's roles array
+  setRoles(roles: string[]) {
+    const userJson = localStorage.getItem('user');
+    if (userJson) {
+      const user = JSON.parse(userJson);
+      user.roles = roles;
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+  }
 }

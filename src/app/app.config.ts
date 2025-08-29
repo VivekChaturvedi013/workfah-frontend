@@ -9,7 +9,8 @@ import Aura from '@primeng/themes/aura';
 import { TokenInterceptor } from './token.interceptor';
 
 export const appConfig: ApplicationConfig = {
-  providers: [provideZoneChangeDetection({ eventCoalescing: true }), 
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     {
@@ -27,6 +28,7 @@ export const appConfig: ApplicationConfig = {
             theme: {
                 preset: Aura
             }
-        })
+        }),
+        
   ]
 };
