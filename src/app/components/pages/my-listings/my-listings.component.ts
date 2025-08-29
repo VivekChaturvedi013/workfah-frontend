@@ -9,6 +9,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { MessageModule } from 'primeng/message';
 import { RouterModule } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-my-listings',
@@ -40,7 +41,7 @@ export class MyListingsComponent implements OnInit {
   // Guest: load my bookings
   loadBookings() {
     this.http
-      .get<any[]>('http://localhost:5000/api/bookings/my-bookings')
+      .get<any[]>(`${environment.apiUrl}/bookings/my-bookings`)
       .subscribe({
         next: (data) => (this.myBookings = data),
         error: (err) => console.error('Error fetching bookings', err),
@@ -50,7 +51,7 @@ export class MyListingsComponent implements OnInit {
   // Host: load booking requests for my listings
   loadRequests() {
     this.http
-      .get<any[]>('http://localhost:5000/api/bookings/requests')
+      .get<any[]>(`${environment.apiUrl}/bookings/requests`)
       .subscribe({
         next: (data) => (this.myListings = this.transformRequests(data)),
         error: (err) => console.error('Error fetching requests', err),
@@ -60,7 +61,7 @@ export class MyListingsComponent implements OnInit {
   //load my listings
   loadMyListings() {
     this.http
-      .get<any[]>('http://localhost:5000/api/bookings/my-listings')
+      .get<any[]>(`${environment.apiUrl}/bookings/my-listings`)
       .subscribe({
         next: (data) => (this.myListings = data),
         error: (err) => console.error('Error fetching my listings', err),
@@ -95,7 +96,7 @@ export class MyListingsComponent implements OnInit {
 
   updateRequest(requestId: string, status: 'approve' | 'reject') {
     this.http
-      .put(`http://localhost:5000/api/bookings/${requestId}/${status}`, {})
+      .put(`${environment.apiUrl}/bookings/${requestId}/${status}`, {})
       .subscribe({
         next: () => this.loadRequests(),
         error: (err) => console.error(`Error updating request ${status}`, err),
@@ -104,7 +105,7 @@ export class MyListingsComponent implements OnInit {
 
   cancelBooking(bookingId: string) {
     this.http
-      .put(`http://localhost:5000/api/bookings/${bookingId}/cancel`, {})
+      .put(`${environment.apiUrl}/bookings/${bookingId}/cancel`, {})
       .subscribe({
         next: () => this.loadBookings(),
         error: (err) => console.error('Error cancelling booking', err),

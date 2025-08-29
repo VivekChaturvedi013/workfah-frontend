@@ -227,7 +227,7 @@ isHost(): boolean {
       host:this.selectedListing.host
     };
 
-    this.http.post('http://localhost:5000/api/bookings/request', bookingData).subscribe({
+    this.http.post(`${environment.apiUrl}/bookings/request`, bookingData).subscribe({
       next: () => {
         alert("Booking request sent!");
         this.closeBookingModal();

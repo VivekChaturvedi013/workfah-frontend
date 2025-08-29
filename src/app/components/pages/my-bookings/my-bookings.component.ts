@@ -6,6 +6,7 @@ import { ButtonModule } from 'primeng/button';
 import { TagModule } from 'primeng/tag';
 import { MessageModule } from 'primeng/message';
 import { RouterModule } from '@angular/router';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-my-bookings',
@@ -33,7 +34,7 @@ export class MyBookingsComponent implements OnInit {
   // Guest: load my bookings
   loadBookings() {
     this.http
-      .get<any[]>('http://localhost:5000/api/bookings/my-bookings')
+      .get<any[]>(`${environment.apiUrl}/bookings/my-bookings`)
       .subscribe({
         next: (data) => (this.myBookings = data),
         error: (err) => console.error('Error fetching bookings', err),
@@ -42,7 +43,7 @@ export class MyBookingsComponent implements OnInit {
 
   cancelBooking(bookingId: string) {
     this.http
-      .put(`http://localhost:5000/api/bookings/${bookingId}/cancel`, {})
+      .put(`${environment.apiUrl}//bookings/${bookingId}/cancel`, {})
       .subscribe({
         next: () => this.loadBookings(),
         error: (err) => console.error('Error cancelling booking', err),
