@@ -18,6 +18,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TextareaModule } from 'primeng/textarea';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../auth-service.service';
+import { LoaderService } from '../../../services/loader.service';
 
 
 
@@ -39,8 +40,6 @@ import { AuthService } from '../../../auth-service.service';
     TextareaModule,
     FileUploadModule,
     InputNumberModule,
-    
-    
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -85,16 +84,21 @@ export class HomeComponent {
   selectedListing: any = null;
   bookingDate: string = '';
   bookingTime: string = '';
-  host:string='';
+  host: string = '';
 
   timeSlots: string[] = [
     '9:00 AM - 12:00 PM',
     '12:00 PM - 3:00 PM',
     '3:00 PM - 6:00 PM',
-    '6:00 PM - 9:00 PM'
+    '6:00 PM - 9:00 PM',
   ];
 
-  constructor(private router:Router,public auth: AuthService,private http: HttpClient) {}
+  constructor(
+    private router: Router,
+    public auth: AuthService,
+    private http: HttpClient,
+    private loaderService: LoaderService
+  ) {}
 
   getLocationAndLogPincode() {
     if (!navigator.geolocation) {
@@ -135,60 +139,77 @@ export class HomeComponent {
 
   submitForm() {
     console.log('Form Submitted:', this.form);
-    if ( !this.form.pincode || !this.form.address || !this.form.description || !this.form.hours || !this.form.image) {
+    if (
+      !this.form.pincode ||
+      !this.form.address ||
+      !this.form.description ||
+      !this.form.hours ||
+      !this.form.image
+    ) {
       alert('Please fill all fields');
       return;
     }
+    this.loaderService.show();
     const formData = new FormData();
     formData.append('pincode', this.form.pincode);
     formData.append('address', this.form.address);
     formData.append('description', this.form.description);
     formData.append('availableHours', this.form.hours);
     formData.append('image', this.form.image);
-    this.http.post(`${environment.apiUrl}/listings`, formData).subscribe(
-      (response) => {
+    this.http
+      .post(`${environment.apiUrl}/listings`, formData)
+      .subscribe((response: any) => {
         console.log('listing created sucessfully', response);
-      }
-    )
+        localStorage.setItem("user", JSON.stringify(response?.user));
+        this.loaderService.hide();
+      });
     this.visible = false;
   }
 
   onImageUpload(event: any) {
-  const file: File = event.files[0]; // ✅ correctly access the first file
-  console.log('Uploaded image:', file);
+    const file: File = event.files[0]; // ✅ correctly access the first file
+    console.log('Uploaded image:', file);
 
-  if (file) {
-    this.form.image = file;
+    if (file) {
+      this.form.image = file;
 
-    // Optional: convert to base64 if you want to store the preview or send to API
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result;
-      console.log('Base64 image:', base64);
-    };
-    reader.readAsDataURL(file);
+      // Optional: convert to base64 if you want to store the preview or send to API
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result;
+        console.log('Base64 image:', base64);
+      };
+      reader.readAsDataURL(file);
+    }
+
+    event.options.clear(); // ✅ clears the upload input after upload
   }
 
-  event.options.clear(); // ✅ clears the upload input after upload
-}
+  getListings() {
+    this.loaderService.show();
+    this.http.get(`${environment.apiUrl}/listings/` + this.pincode).subscribe(
+      (response: any) => {
+        this.listings = response;
+        this.loaderService.hide();
+      },
+      (error) => {
+        this.loaderService.hide();
+      },
+      () => this.loaderService.hide()
+    );
+  }
 
-getListings() {
-  this.http.get(`${environment.apiUrl}/listings/` + this.pincode).subscribe((response: any) => {
-    this.listings = response;
-  })
-}
+  logout() {
+    this.auth.logout();
+    this.listings = []; // Clear listings on logout
+    this.pincode = ''; // Clear pincode input
+    alert('Logged out successfully');
+    // Optionally, redirect to home or login page
+    this.router.navigate(['/login']);
+    console.log('User logged out');
+  }
 
-logout() {
-  this.auth.logout();
-  this.listings = []; // Clear listings on logout
-  this.pincode = ''; // Clear pincode input
-  alert('Logged out successfully');
-  // Optionally, redirect to home or login page
-  this.router.navigate(['/login']);
-  console.log('User logged out');
-}
-
-isHost(): boolean {
+  isHost(): boolean {
     const userJson = localStorage.getItem('user');
     if (userJson) {
       const user = JSON.parse(userJson);
@@ -216,7 +237,7 @@ isHost(): boolean {
 
   confirmBooking() {
     if (!this.bookingDate || !this.bookingTime) {
-      alert("Please select date and time!");
+      alert('Please select date and time!');
       return;
     }
 
@@ -224,16 +245,18 @@ isHost(): boolean {
       listingId: this.selectedListing._id,
       date: this.bookingDate,
       time: this.bookingTime,
-      host:this.selectedListing.host
+      host: this.selectedListing.host,
     };
 
-    this.http.post(`${environment.apiUrl}/bookings/request`, bookingData).subscribe({
-      next: () => {
-        alert("Booking request sent!");
-        this.closeBookingModal();
-      },
-      error: () => alert("Failed to send booking request.")
-    });
+    this.http
+      .post(`${environment.apiUrl}/bookings/request`, bookingData)
+      .subscribe({
+        next: () => {
+          alert('Booking request sent!');
+          this.closeBookingModal();
+        },
+        error: () => alert('Failed to send booking request.'),
+        complete: () => this.loaderService.hide(),
+      });
   }
-
 }

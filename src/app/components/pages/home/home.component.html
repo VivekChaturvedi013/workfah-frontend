@@ -4,9 +4,9 @@
   <header class="d-flex justify-content-between align-items-center mb-5">
     <h1 class="h4 fw-bold">Work From Another Home</h1>
     <nav>
-      <a routerLink="/my-bookings" href="#" class="me-3 text-decoration-none text-secondary">My Bookings</a>
+      <a routerLink="/my-bookings" *ngIf="!isHost()" href="#" class="me-3 text-decoration-none text-secondary">My Bookings</a>
       <a routerLink="/my-listings" *ngIf="isHost()" class="me-3 text-decoration-none text-secondary">My Listings / Booking Requests </a><!-- (visible only if host)-->
-      <a (click)="listYourSpaceDialog()" class="me-3 text-decoration-none text-secondary">List Your Space</a>
+      <a style="cursor: pointer;" (click)="listYourSpaceDialog()" class="me-3 text-decoration-none text-secondary">List Your Space</a>
       <a href="#" class="me-3 text-decoration-none text-secondary">About Us</a>
       <a href="#" class="me-3 text-decoration-none text-secondary">Help / FAQ</a>
       <a *ngIf="!auth.isLoggedIn(); else loggedIn" class="me-3 text-decoration-none text-secondary" routerLink="/login">
@@ -34,7 +34,7 @@
   <div class="row row-cols-1 row-cols-md-3 g-4 justify-content-center">
     <div class="col" *ngFor="let listing of listings">
       <div class="card h-100 shadow-sm">
-        <img [src]="listing.image" class="card-img-top" alt="listing">
+        <img [src]="listing.image" class="card-img-top fit-img" alt="listing">
         <div class="card-body text-start">
           <h5 class="card-title">{{ listing.address }}</h5>
           <p class="card-text text-muted">

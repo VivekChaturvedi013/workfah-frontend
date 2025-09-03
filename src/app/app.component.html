@@ -1,2 +1,6 @@
 <!-- <app-header></app-header>  -->
+
+<div class="loader-container spinner" *ngIf="(loaderService.loading$ | async)">
+  <p-progressSpinner strokeWidth="2" animationDuration="1s" ></p-progressSpinner>
+</div>
 <router-outlet></router-outlet>

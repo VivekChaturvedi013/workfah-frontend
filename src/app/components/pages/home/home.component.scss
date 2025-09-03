@@ -89,3 +89,9 @@ li a img {
     width: 70%;
     display: inline-flex;
 }
+
+.fit-img {
+  width: 100%;
+  height: 200px; /* adjust as needed */
+  object-fit: contain; /* shows full image */
+}

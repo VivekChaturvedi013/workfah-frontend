@@ -21,10 +21,11 @@
   </div>
 </main> -->
 
-<main class="container mx-auto p-4">
-  <div class="flex justify-between items-center mb-4">
-    <h2 class="text-xl font-bold">My Booking Requests</h2>
+<main class="container mx-auto">
+  <div class="flex justify-between items-center">
+    <h3 class="text-xl font-bold">My Booking Requests</h3>
     <p-button 
+      *ngIf="!isHost()"
       label="Back to Home" 
       icon="pi pi-home" 
       routerLink="/home" 
@@ -33,11 +34,13 @@
   </div>
 
   <!-- Empty State -->
-  <p-message 
-    *ngIf="myBookings.length === 0" 
-    severity="info" 
-    text="No bookings yet.">
-  </p-message>
+   <div style="margin-top: 1rem;">
+     <p-message 
+       *ngIf="myBookings.length === 0" 
+       severity="info" 
+       text="No bookings yet.">
+     </p-message>
+   </div>
 
   <!-- Booking Cards -->
   <div class="grid gap-4">
