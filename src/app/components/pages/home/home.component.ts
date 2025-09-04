@@ -19,7 +19,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { environment } from '../../../../environments/environment';
 import { AuthService } from '../../../auth-service.service';
 import { LoaderService } from '../../../services/loader.service';
-
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 
@@ -40,6 +41,23 @@ import { LoaderService } from '../../../services/loader.service';
     TextareaModule,
     FileUploadModule,
     InputNumberModule,
+  ],
+  animations: [
+    trigger('overlayMenu', [
+      state('closed', style({
+        opacity: 0,
+        width: '0%',
+        visibility: 'hidden'
+      })),
+      state('open', style({
+        opacity: 1,
+        width: '80%',
+        visibility: 'visible'
+      })),
+      transition('closed <=> open', [
+        animate('300ms ease-in-out')
+      ])
+    ])
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
@@ -69,6 +87,7 @@ export class HomeComponent {
   //   }
   //   )
   // }
+  isMenuOpen: boolean = false;
   pincode: string = '';
   listings: any[] = [];
   visible: boolean = false;
@@ -133,8 +152,15 @@ export class HomeComponent {
     );
   }
 
+  toggleMenu() {
+    this.isMenuOpen = !this.isMenuOpen;
+  }
   listYourSpaceDialog() {
     this.visible = true;
+  }
+
+  closeMenu() {
+    this.isMenuOpen = false;
   }
 
   submitForm() {

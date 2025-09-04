@@ -1,24 +1,52 @@
 <!-- home.component.html (Bootstrap Version) -->
 <div class="container py-4">
   <!-- Header -->
-  <header class="d-flex justify-content-between align-items-center mb-5">
-    <h1 class="h4 fw-bold">Work From Another Home</h1>
-    <nav>
-      <a routerLink="/my-bookings" *ngIf="!isHost()" href="#" class="me-3 text-decoration-none text-secondary">My Bookings</a>
-      <a routerLink="/my-listings" *ngIf="isHost()" class="me-3 text-decoration-none text-secondary">My Listings / Booking Requests </a><!-- (visible only if host)-->
-      <a style="cursor: pointer;" (click)="listYourSpaceDialog()" class="me-3 text-decoration-none text-secondary">List Your Space</a>
-      <a href="#" class="me-3 text-decoration-none text-secondary">About Us</a>
-      <a href="#" class="me-3 text-decoration-none text-secondary">Help / FAQ</a>
-      <a *ngIf="!auth.isLoggedIn(); else loggedIn" class="me-3 text-decoration-none text-secondary" routerLink="/login">
-        Login / Signup
-      </a>
-      <ng-template #loggedIn>
-        <a class="me-3 text-decoration-none text-secondary" (click)="logout()" style="cursor:pointer;">
-          Logout
-        </a>
-      </ng-template>
-    </nav>
-  </header>
+<header class="d-flex justify-content-between align-items-center mb-3 px-3 py-2 border-bottom">
+  <h1 class="h4 fw-bold">Work From Another Home</h1>
+
+  <!-- Hamburger (mobile only) -->
+  <button
+    class="navbar-toggler d-lg-none border-0 bg-transparent"
+    type="button"
+    (click)="toggleMenu()"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <!-- Desktop Navigation -->
+  <nav class="d-none d-lg-flex gap-3">
+    <a routerLink="/my-bookings" *ngIf="!isHost()" class="text-decoration-none text-dark">My Bookings</a>
+    <a routerLink="/my-listings" *ngIf="isHost()" class="text-decoration-none text-dark">My Listings / My Bookings</a>
+    <a (click)="listYourSpaceDialog()" class="text-decoration-none text-dark">List Your Space</a>
+    <a href="#" class="text-decoration-none text-dark">About Us</a>
+    <a href="#" class="text-decoration-none text-dark">Help</a>
+    <a *ngIf="!auth.isLoggedIn(); else loggedIn" routerLink="/login" class="text-decoration-none text-dark">Login / Signup</a>
+    <ng-template #loggedIn>
+      <a (click)="logout()" style="cursor:pointer;" class="text-decoration-none text-dark">Logout</a>
+    </ng-template>
+  </nav>
+</header>
+
+<!-- Mobile Overlay Menu -->
+<div
+  class="overlay d-lg-none"
+  [@overlayMenu]="isMenuOpen ? 'open' : 'closed'"
+>
+  <div class="overlay-content">
+    <button class="btn-close position-absolute top-0 end-0 m-3" (click)="closeMenu()"></button>
+    <a routerLink="/my-bookings" *ngIf="!isHost()" (click)="closeMenu()">My Bookings</a>
+    <a routerLink="/my-listings" *ngIf="isHost()" (click)="closeMenu()">My Listings / My bookings</a>
+    <a (click)="listYourSpaceDialog(); closeMenu()">List Your Space</a>
+    <a href="#" (click)="closeMenu()">About Us</a>
+    <a href="#" (click)="closeMenu()">Help / FAQ</a>
+    <a *ngIf="!auth.isLoggedIn(); else mobileLoggedIn" routerLink="/login" (click)="closeMenu()">Login / Signup</a>
+    <ng-template #mobileLoggedIn>
+      <a (click)="logout(); closeMenu()">Logout</a>
+    </ng-template>
+  </div>
+</div>
+
 
   <!-- Main Content -->
   <main class="text-center">

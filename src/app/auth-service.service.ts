@@ -2,7 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { tap } from "rxjs";
 import { environment } from '../environments/environment';
-
+import { jwtDecode, JwtPayload } from "jwt-decode";
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private api = `${environment.apiUrl}/users`;
@@ -29,6 +29,19 @@ export class AuthService {
     );
   }
 
+
+  private isTokenExpired(token: string): boolean {
+    try {
+      const { exp } = jwtDecode<JwtPayload>(token);
+      if (typeof exp === 'undefined') {
+        return true; // treat tokens without exp as expired
+      }
+      return Date.now() >= exp * 1000;
+    } catch {
+      return true; // if invalid token → treat as expired
+    }
+  }
+
   logout() {
     localStorage.clear();
   }
@@ -37,8 +50,10 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  isLoggedIn(): boolean {
-    return !!this.getToken();
+   isLoggedIn(): boolean {
+    const token = this.getToken();
+    if (!token) return false;
+    return !this.isTokenExpired(token);
   }
 
   // Get the user's first role (e.g., "guest" or "host")
